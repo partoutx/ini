@@ -1,8 +1,6 @@
 /*jslint node: true, vars: true, nomen: true*/
 'use strict';
 
-
-
 var eol = process.platform === 'win32' ? '\r\n' : '\n';
 
 function isQuoted(val) {
@@ -161,7 +159,7 @@ function decode(str, hash_in_val) {
   return out;
 }
 
-function unsafe(val, doUnesc, hash_in_val) {
+function unsafe(val, hash_in_val) {
   val = (val || '').trim();
 
   if (isQuoted(val)) {
