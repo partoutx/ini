@@ -87,8 +87,8 @@ function encode(obj, opt) {
 function decode(str, opts) {
   opts = (opts ? opts : {});
 
-  if (opts.hash_in_val === undefined) {
-    opts.hash_in_val = false;
+  if (opts.hash_in_value === undefined) {
+    opts.hash_in_value = false;
   }
 
   var out = {};
@@ -106,12 +106,12 @@ function decode(str, opts) {
     if (!match)
       return;
     if (match[1] !== undefined) {
-      section = unsafe(match[1], opts.hash_in_val);
+      section = unsafe(match[1], opts.hash_in_value);
       p = out[section] = out[section] || {};
       return;
     }
-    var key = unsafe(match[2], opts.hash_in_val);
-    var value = match[3] ? unsafe((match[4] || ''), opts.hash_in_val) : true;
+    var key = unsafe(match[2], opts.hash_in_value);
+    var value = match[3] ? unsafe((match[4] || ''), opts.hash_in_value) : true;
     switch (value) {
       case 'true':
       case 'false':
@@ -167,7 +167,7 @@ function decode(str, opts) {
   return out;
 }
 
-function unsafe(val, hash_in_val) {
+function unsafe(val, hash_in_value) {
   val = (val || '').trim();
 
   if (isQuoted(val)) {
@@ -189,7 +189,7 @@ function unsafe(val, hash_in_val) {
           unesc += '\\' + c;
         }
         esc = false;
-      } else if (';#'.indexOf(c) !== -1 && !hash_in_val) {
+      } else if (';#'.indexOf(c) !== -1 && !hash_in_value) {
         break;
       } else if (c === '\\') {
         esc = true;
