@@ -39,7 +39,8 @@ function encode(obj, opt) {
   if (typeof opt === 'string') {
     opt = {
       section: opt,
-      whitespace: false
+      whitespace: false,
+      noesc: false
     };
   } else {
     opt = opt || {};
@@ -55,7 +56,7 @@ function encode(obj, opt) {
     var val = obj[k];
     if (val && Array.isArray(val)) {
       val.forEach(function (item) {
-        out += safe(k + '[]') + separator + safe(item) + '\n';
+        out += safe(k + '[]') + separator + safe(item, opt.noesc) + '\n';
       });
     } else if (val && typeof val === 'object') {
       children.push(k);
