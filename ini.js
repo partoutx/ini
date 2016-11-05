@@ -11,6 +11,7 @@ function isQuoted(val) {
 function safe(val, noesc) {
   console.log('safe: noesc:', noesc, 'val:', val);
   return (
+    !noesc ||
     typeof val !== 'string' ||
     val.match(/[=\r\n]/) ||
     val.match(/^\[/) ||
@@ -18,8 +19,7 @@ function safe(val, noesc) {
       val.length > 1 &&
       isQuoted(val)
     ) ||
-    val !== val.trim() &&
-    !noesc
+    val !== val.trim()
   ) ?
     JSON.stringify(val) :
     (noesc ? val : val.replace(/;/g, '\\;').replace(/#/g, '\\#'));
