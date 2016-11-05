@@ -8,15 +8,19 @@ function isQuoted(val) {
     (val.charAt(0) === "'" && val.slice(-1) === "'");
 }
 
-function safe(val) {
-  return (typeof val !== 'string' ||
+function safe(val, noesc) {
+  return (
+    typeof val !== 'string' ||
     val.match(/[=\r\n]/) ||
     val.match(/^\[/) ||
-    (val.length > 1 &&
-     isQuoted(val)) ||
-    val !== val.trim()) ?
-      JSON.stringify(val) :
-      val.replace(/;/g, '\\;').replace(/#/g, '\\#');
+    (
+      val.length > 1 &&
+      isQuoted(val)
+    ) ||
+    val !== val.trim()
+  ) ?
+    JSON.stringify(val) :
+    (noesc ? val : val.replace(/;/g, '\\;').replace(/#/g, '\\#'));
 }
 
 function dotSplit(str) {
@@ -40,6 +44,9 @@ function encode(obj, opt) {
   } else {
     opt = opt || {};
     opt.whitespace = opt.whitespace === true;
+    if (opt.noesc === undefined) {
+      opt.noesc = false;
+    }
   }
 
   var separator = opt.whitespace ? ' = ' : '=';
@@ -53,7 +60,7 @@ function encode(obj, opt) {
     } else if (val && typeof val === 'object') {
       children.push(k);
     } else {
-      out += safe(k) + separator + safe(val) + eol;
+      out += safe(k) + separator + safe(val, opt.noesc) + eol;
     }
   });
 
@@ -77,10 +84,11 @@ function encode(obj, opt) {
   return out;
 }
 
-function decode(str, hash_in_val) {
+function decode(str, opts) {
+  opts = (opts ? opts : {});
 
-  if (hash_in_val === undefined) {
-    hash_in_val = false;
+  if (opts.hash_in_val === undefined) {
+    opts.hash_in_val = false;
   }
 
   var out = {};
@@ -98,12 +106,12 @@ function decode(str, hash_in_val) {
     if (!match)
       return;
     if (match[1] !== undefined) {
-      section = unsafe(match[1], hash_in_val);
+      section = unsafe(match[1], opts.hash_in_val);
       p = out[section] = out[section] || {};
       return;
     }
-    var key = unsafe(match[2], hash_in_val);
-    var value = match[3] ? unsafe((match[4] || ''), hash_in_val) : true;
+    var key = unsafe(match[2], opts.hash_in_val);
+    var value = match[3] ? unsafe((match[4] || ''), opts.hash_in_val) : true;
     switch (value) {
       case 'true':
       case 'false':
