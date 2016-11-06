@@ -9,7 +9,6 @@ function isQuoted(val) {
 }
 
 function safe(val, noesc) {
-  console.log('safe: noesc:', noesc, 'val type:', typeof val, 'val:', val);
 
   if (noesc && typeof val === 'string') {
     return val;
@@ -55,7 +54,6 @@ function encode(obj, opt) {
       opt.noesc = false;
     }
   }
-  console.log('encode: opt:', opt);
 
   var separator = opt.whitespace ? ' = ' : '=';
 
