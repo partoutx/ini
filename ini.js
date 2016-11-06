@@ -9,7 +9,12 @@ function isQuoted(val) {
 }
 
 function safe(val, noesc) {
-  console.log('safe: noesc:', noesc, 'val:', val);
+  console.log('safe: noesc:', noesc, 'val type:', typeof val, 'val:', val);
+
+  if (noesc && typeof val === 'string') {
+    return val;
+  }
+
   return (
     typeof val !== 'string' ||
     val.match(/[=\r\n]/) ||
@@ -20,8 +25,8 @@ function safe(val, noesc) {
     ) ||
     val !== val.trim()
   ) ?
-    (!noesc ? JSON.stringify(val) : val) :
-    (noesc ? val : val.replace(/;/g, '\\;').replace(/#/g, '\\#'));
+    JSON.stringify(val) :
+    val.replace(/;/g, '\\;').replace(/#/g, '\\#');
 }
 
 function dotSplit(str) {
